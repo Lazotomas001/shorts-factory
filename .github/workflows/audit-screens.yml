@@ -1,0 +1,52 @@
+name: Audit screenshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install playwright pillow && python -m playwright install --with-deps chromium
+      - name: Capture live pages (1440x900) with their URL as a caption
+        run: |
+          python - <<'EOF'
+          import asyncio
+          from datetime import datetime, timezone
+          from PIL import Image, ImageDraw, ImageFont
+          from playwright.async_api import async_playwright
+          pages = {
+            "homepage-screenshot.png": "https://lazotomas001.github.io/shorts-factory/",
+            "privacy-policy-screenshot.png": "https://lazotomas001.github.io/shorts-factory/PRIVACY.html",
+            "terms-of-service-screenshot.png": "https://lazotomas001.github.io/shorts-factory/TERMS.html",
+          }
+          async def main():
+              async with async_playwright() as p:
+                  b = await p.chromium.launch()
+                  pg = await b.new_page(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
+                  for name, url in pages.items():
+                      await pg.goto(url, wait_until="networkidle")
+                      await pg.screenshot(path="/tmp/" + name)
+                      im = Image.open("/tmp/" + name).convert("RGB")
+                      out = Image.new("RGB", (im.width, im.height + 56), (240, 242, 245))
+                      out.paste(im, (0, 56))
+                      d = ImageDraw.Draw(out)
+                      f = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 22)
+                      ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+                      d.rounded_rectangle([16, 10, im.width - 16, 46], 18, fill="white", outline=(200, 200, 210))
+                      d.text((36, 28), f"URL: {url}    (captured {ts})", font=f, fill=(40, 40, 50), anchor="lm")
+                      out.save("docs/audit/" + name)
+                  await b.close()
+          asyncio.run(main())
+          EOF
+      - run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          git add docs/audit && git commit -m "audit screenshots" && git push
