@@ -110,6 +110,22 @@ def cmd_auth(args):
     print(f"\nSave this as GitHub secret  YT_REFRESH_TOKEN_{args.channel.upper()} :\n\n{token}\n")
 
 
+def cmd_check_auth(args):
+    """Verify the GitHub secrets work: prints which channel the refresh token belongs to."""
+    from factory import youtube
+    for key in load_config():
+        token = os.environ.get(f"YT_REFRESH_TOKEN_{key.upper()}")
+        if not token:
+            print(f"[{key}] no refresh token secret set")
+            continue
+        try:
+            resp = youtube._service(token).channels().list(part="snippet", mine=True).execute()
+            for ch in resp.get("items", []):
+                print(f"[{key}] OK -> channel '{ch['snippet']['title']}' ({ch['id']})")
+        except Exception as e:  # noqa: BLE001
+            print(f"[{key}] FAILED: {type(e).__name__}: {str(e)[:300]}")
+
+
 def cmd_grow_quiz(args):
     from factory import llm
     from channels.quiz import load_bank
@@ -135,6 +151,7 @@ def main():
     t.set_defaults(fn=cmd_trends)
     a = sub.add_parser("auth"); a.add_argument("--channel", required=True); a.add_argument("--secret", default="client_secret.json")
     a.set_defaults(fn=cmd_auth)
+    c = sub.add_parser("check-auth"); c.set_defaults(fn=cmd_check_auth)
     g = sub.add_parser("grow-quiz"); g.add_argument("--n", type=int, default=30); g.set_defaults(fn=cmd_grow_quiz)
     args = p.parse_args()
     args.fn(args)
