@@ -1,0 +1,54 @@
+name: Daily Shorts
+
+on:
+  schedule:
+    - cron: "17 9 * * *"     # every day 09:17 UTC (4:17am New York)
+  workflow_dispatch:          # "Run workflow" button for manual runs
+    inputs:
+      channel:
+        description: "Only this channel (blank = all enabled)"
+        required: false
+
+permissions:
+  contents: write             # lets the job save data/history.json (no-repeat memory)
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install system tools
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
+      - name: Install Python packages
+        run: pip install -r requirements.txt
+      - name: Make (and upload) today's Shorts
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN_KIDS: ${{ secrets.YT_REFRESH_TOKEN_KIDS }}
+          YT_REFRESH_TOKEN_HOLIDAY: ${{ secrets.YT_REFRESH_TOKEN_HOLIDAY }}
+          YT_REFRESH_TOKEN_QUIZ: ${{ secrets.YT_REFRESH_TOKEN_QUIZ }}
+        run: |
+          if [ -n "${{ github.event.inputs.channel }}" ]; then
+            python run.py daily --channel "${{ github.event.inputs.channel }}"
+          else
+            python run.py daily
+          fi
+      - name: Save no-repeat history
+        run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          git add data/history.json
+          git commit -m "history: $(date -u +%F)" || echo "nothing to commit"
+          git push
+      - name: Hand over videos for review / manual upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: shorts-${{ github.run_id }}
+          path: outbox/
+          retention-days: 14

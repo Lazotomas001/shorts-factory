@@ -1,0 +1,7 @@
+outbox/
+out/
+data/tts_cache/
+client_secret*.json
+__pycache__/
+*.pyc
+.env

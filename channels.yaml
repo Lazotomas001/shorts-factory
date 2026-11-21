@@ -1,0 +1,39 @@
+# One entry per YouTube channel. Each channel = one Brand Account under your Google account.
+#
+# upload_mode:
+#   manual -> videos + a ready-to-paste upload sheet go to outbox/ (use this until your API project passes audit)
+#   api    -> uploaded and scheduled automatically (needs YT_REFRESH_TOKEN_<KEY> secret + an audited API project)
+#
+# publish_hours_utc: daily posting slots (UTC). 14 = 9am New York (EST), 23 = 6pm New York (EST).
+
+channels:
+  kids:
+    name: "Bubbo & Friends"            # change to your channel name
+    module: kids
+    enabled: true
+    per_day: 2
+    upload_mode: manual
+    made_for_kids: true                # REQUIRED for content aimed at children (COPPA)
+    publish_hours_utc: [12, 22]
+    trend_queries: ["counting for toddlers", "learn colors for kids", "nursery rhymes shorts", "kids cartoon learning"]
+
+  holiday:
+    name: "Cozy Christmas Sing-Along"
+    module: holiday
+    enabled: true
+    season: ["11-01", "12-26"]          # only produces videos inside this window (MM-DD)
+    per_day: 2
+    upload_mode: manual
+    made_for_kids: true                # sing-alongs with cartoon scenes are usually "made for kids"; change only if your audience is truly general
+    publish_hours_utc: [14, 23]
+    trend_queries: ["christmas songs for kids", "jingle bells lyrics", "christmas sing along", "christmas music box"]
+
+  quiz:
+    name: "60 Second Quiz"
+    module: quiz
+    enabled: false                     # turn on when you're ready for channel #3
+    per_day: 2
+    upload_mode: manual
+    made_for_kids: false
+    publish_hours_utc: [16, 1]
+    trend_queries: ["quiz shorts", "general knowledge quiz", "trivia shorts", "guess the answer"]
