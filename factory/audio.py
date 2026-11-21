@@ -79,7 +79,33 @@ def pad(f, dur):
     return s * a * rel
 
 
-INSTRUMENTS = {"music_box": music_box, "celesta": celesta, "bell": bell, "piano": piano}
+def strings(f, dur):
+    """Soft string-section pad: harmonic stack, gentle vibrato, slow attack/release."""
+    t = _t(dur + 0.5)
+    vib = 1 + 0.0035 * np.sin(2 * np.pi * 5.2 * t) * np.minimum(1, t / 0.6)
+    ph = 2 * np.pi * f * np.cumsum(vib) / SR
+    s = sum((1 / k) * np.sin(k * ph + k) for k in range(1, 7)) * 0.5
+    s += 0.25 * np.sin(2 * np.pi * f * 1.003 * t)          # slight chorus
+    a = np.minimum(1, t / 0.18)
+    rel = np.where(t < dur, 1, np.clip(1 - (t - dur) / 0.45, 0, 1))
+    return s * a * rel
+
+
+def harp(f, dur):
+    t = _t(max(dur, 0.6) + 1.0)
+    s = sum((0.55 ** k) * np.sin(2 * np.pi * f * (k + 1) * t) * np.exp(-t * (1.2 + 1.5 * k)) for k in range(5))
+    return s * _env(len(t), 0.002, 99, 0.2)
+
+
+def cello(f, dur):
+    t = _t(dur + 0.3)
+    s = np.sin(2 * np.pi * f * t) + 0.45 * np.sin(4 * np.pi * f * t) + 0.2 * np.sin(6 * np.pi * f * t)
+    a = np.minimum(1, t / 0.06)
+    rel = np.where(t < dur, 1, np.clip(1 - (t - dur) / 0.25, 0, 1))
+    return s * a * rel * np.exp(-t * 0.25)
+
+
+INSTRUMENTS = {"music_box": music_box, "celesta": celesta, "bell": bell, "piano": piano, "harp": harp}
 
 
 # ---------------------------------------------------------------- effects

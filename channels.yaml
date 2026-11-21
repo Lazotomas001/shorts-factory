@@ -17,16 +17,29 @@ channels:
     publish_hours_utc: [12, 22]
     trend_queries: ["counting for toddlers", "learn colors for kids", "nursery rhymes shorts", "kids cartoon learning"]
 
-  holiday:
-    name: "Cozy Christmas Sing-Along"
+  holiday:                             # (old Shorts version of the Christmas channel, replaced by holiday_long)
+    name: "Cozy Christmas Sing-Along (Shorts)"
     module: holiday
-    enabled: true
+    enabled: false
     season: ["11-01", "12-26"]          # only produces videos inside this window (MM-DD)
     per_day: 2
     upload_mode: manual
     made_for_kids: true                # sing-alongs with cartoon scenes are usually "made for kids"; change only if your audience is truly general
     publish_hours_utc: [14, 23]
     trend_queries: ["christmas songs for kids", "jingle bells lyrics", "christmas sing along", "christmas music box"]
+
+  holiday_long:                        # full-length 16:9 carols with lyrics (not Shorts)
+    name: "Cozy Christmas Sing-Along"
+    module: holiday_long
+    enabled: true
+    season: ["11-01", "12-31"]
+    per_day: 1                         # one full carol per day
+    compilation_weekdays: [5]          # Saturday: also a long "carols with lyrics" compilation
+    compilation_songs: 6
+    upload_mode: manual
+    made_for_kids: false               # cozy carols for families/general audience, not aimed at children
+    publish_hours_utc: [22]            # 5pm New York
+    trend_queries: ["christmas carols with lyrics", "christmas songs sing along", "christmas music fireplace", "silent night lyrics"]
 
   quiz:
     name: "60 Second Quiz"

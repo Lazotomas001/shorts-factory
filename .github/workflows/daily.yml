@@ -15,7 +15,7 @@ permissions:
 jobs:
   make:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,6 +52,16 @@ jobs:
           name: shorts-${{ github.run_id }}
           path: outbox/
           retention-days: 14
+      - name: Put big files (weekly compilations) on a GitHub Release instead of git
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          big=$(find outbox -name '*.mp4' -size +90M)
+          if [ -n "$big" ]; then
+            tag="outbox-$(date -u +%F)"
+            gh release create "$tag" --title "Videos $(date -u +%F)" --notes "Large videos made by the daily run" --prerelease || true
+            for f in $big; do gh release upload "$tag" "$f" --clobber && echo "${{ github.server_url }}/${{ github.repository }}/releases/download/$tag/$(basename $f)" > "$f.url" && rm "$f"; done
+          fi
       - name: Publish latest videos to the 'outbox' branch (easy download / upload)
         run: |
           cd outbox

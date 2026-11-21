@@ -38,9 +38,9 @@ def in_season(cfg, today=None):
     return a <= md <= b if a <= b else (md >= a or md <= b)
 
 
-def make(key, cfg, count, ledger, seed=None, **kw):
+def make(key, cfg, count, ledger, seed=None, out_sub=None, **kw):
     mod = importlib.import_module(f"channels.{cfg['module']}")
-    out_dir = OUTBOX / date.today().isoformat() / key
+    out_dir = out_sub or (OUTBOX / date.today().isoformat() / key)
     metas = []
     for i in range(count):
         rng = np.random.default_rng(seed + i if seed is not None else None)
@@ -73,6 +73,13 @@ def cmd_daily(args):
             print(f"[{key}] skipped (disabled or out of season)")
             continue
         out_dir, metas = make(key, cfg, cfg.get("per_day", 1), ledger)
+        mod = importlib.import_module(f"channels.{cfg['module']}")
+        if hasattr(mod, "make_compilation") and date.today().weekday() in cfg.get("compilation_weekdays", []):
+            comp = mod.make_compilation(out_dir, np.random.default_rng(), ledger, channel=key,
+                                        n=cfg.get("compilation_songs", 6))
+            comp["made_for_kids"], comp["channel"], comp["large"] = cfg.get("made_for_kids", False), key, True
+            metas.append(comp)
+            print(f"[{key}] made compilation {Path(comp['file']).name}")
         token = os.environ.get(f"YT_REFRESH_TOKEN_{key.upper()}")
         if cfg.get("upload_mode") == "api" and token:
             slots = youtube.schedule_slots(len(metas), cfg.get("publish_hours_utc", [15]))
@@ -89,6 +96,14 @@ def cmd_make(args):
     kw = {}
     if args.format:
         kw["fmt" if cfgs[args.channel]["module"] == "kids" else "song_key"] = args.format
+    if args.compilation:
+        mod = importlib.import_module(f"channels.{cfgs[args.channel]['module']}")
+        out_dir = OUTBOX / date.today().isoformat() / args.channel
+        comp = mod.make_compilation(out_dir, np.random.default_rng(args.seed), ledger, channel=args.channel, n=args.count)
+        comp["made_for_kids"] = cfgs[args.channel].get("made_for_kids", False)
+        write_sheet(out_dir, [comp], cfgs[args.channel])
+        print("made", comp["file"])
+        return
     out_dir, metas = make(args.channel, cfgs[args.channel], args.count, ledger, seed=args.seed, **kw)
     write_sheet(out_dir, metas, cfgs[args.channel])
 
@@ -145,8 +160,9 @@ def main():
     sub = p.add_subparsers(dest="cmd", required=True)
     d = sub.add_parser("daily"); d.add_argument("--channel"); d.set_defaults(fn=cmd_daily)
     m = sub.add_parser("make"); m.add_argument("--channel", required=True); m.add_argument("--count", type=int, default=1)
-    m.add_argument("--format", help="kids: counting|colors|shadow; holiday: jingle_bells|deck_the_halls|we_wish_you|silent_night")
-    m.add_argument("--seed", type=int); m.set_defaults(fn=cmd_make)
+    m.add_argument("--format", help="kids: counting|colors|shadow; holiday/holiday_long: song key, e.g. silent_night")
+    m.add_argument("--seed", type=int); m.add_argument("--compilation", action="store_true")
+    m.set_defaults(fn=cmd_make)
     t = sub.add_parser("trends"); t.add_argument("--channel", required=True); t.add_argument("--days", type=int, default=30)
     t.set_defaults(fn=cmd_trends)
     a = sub.add_parser("auth"); a.add_argument("--channel", required=True); a.add_argument("--secret", default="client_secret.json")
