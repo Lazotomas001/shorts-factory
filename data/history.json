@@ -57,6 +57,43 @@
    "key": "o_come_all_ye_faithful|bell",
    "at": "2026-11-21T23:37:35+00:00",
    "title": "O Come, All Ye Faithful"
+  },
+  {
+   "key": "we_wish_you|bell",
+   "at": "2026-11-21T23:40:06+00:00",
+   "title": "We Wish You a Merry Christmas"
+  },
+  {
+   "key": "good_king_wenceslas|bell",
+   "at": "2026-11-21T23:42:45+00:00",
+   "title": "Good King Wenceslas"
+  },
+  {
+   "key": "jingle_bells|harp",
+   "at": "2026-11-21T23:44:28+00:00",
+   "title": "Jingle Bells"
+  },
+  {
+   "key": "o_come_all_ye_faithful|music_box",
+   "at": "2026-11-21T23:46:11+00:00",
+   "title": "O Come, All Ye Faithful"
+  },
+  {
+   "key": "deck_the_halls|harp",
+   "at": "2026-11-21T23:47:44+00:00",
+   "title": "Deck the Halls"
+  },
+  {
+   "key": "silent_night|bell",
+   "at": "2026-11-21T23:49:12+00:00",
+   "title": "Silent Night"
+  }
+ ],
+ "holiday_long": [
+  {
+   "key": "we_wish_you|music_box",
+   "at": "2026-11-21T23:39:19+00:00",
+   "title": "We Wish You a Merry Christmas"
   }
  ]
 }
