@@ -1,5 +1,9 @@
 # Shorts Factory: free, automated, faceless YouTube Shorts
 
+**[Privacy Policy](PRIVACY.html) · [Terms of Service](TERMS.html) · Uses YouTube API Services ([YouTube Terms of Service](https://www.youtube.com/t/terms), [Google Privacy Policy](https://policies.google.com/privacy))**
+
+Shorts Factory Uploader is a private, internal tool that Tomas Lazo uses to create original animated Shorts and upload them to his own YouTube channels (e.g. *Bubbo & Friends*).
+
 It makes **original** vertical Shorts for several channels every day and runs free on GitHub Actions.
 
 | Channel | What it makes | Status |
