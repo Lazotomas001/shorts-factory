@@ -52,3 +52,10 @@ jobs:
           name: shorts-${{ github.run_id }}
           path: outbox/
           retention-days: 14
+      - name: Publish latest videos to the 'outbox' branch (easy download / upload)
+        run: |
+          cd outbox
+          git init -q -b outbox
+          git add -A
+          git -c user.name="shorts-bot" -c user.email="shorts-bot@users.noreply.github.com" commit -qm "outbox $(date -u +%F)"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" outbox
