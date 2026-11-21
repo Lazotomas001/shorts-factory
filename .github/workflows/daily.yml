@@ -52,16 +52,11 @@ jobs:
           name: shorts-${{ github.run_id }}
           path: outbox/
           retention-days: 14
-      - name: Put big files (weekly compilations) on a GitHub Release instead of git
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Split big files (weekly compilations) into <90 MB parts for the outbox branch
         run: |
-          big=$(find outbox -name '*.mp4' -size +90M)
-          if [ -n "$big" ]; then
-            tag="outbox-$(date -u +%F)"
-            gh release create "$tag" --title "Videos $(date -u +%F)" --notes "Large videos made by the daily run" --prerelease || true
-            for f in $big; do gh release upload "$tag" "$f" --clobber && echo "${{ github.server_url }}/${{ github.repository }}/releases/download/$tag/$(basename $f)" > "$f.url" && rm "$f"; done
-          fi
+          for f in $(find outbox -name '*.mp4' -size +90M); do
+            split -b 85M -d -a 2 "$f" "$f.part" && ls "$f".part* | wc -l > "$f.parts" && rm "$f"
+          done
       - name: Publish latest videos to the 'outbox' branch (easy download / upload)
         run: |
           cd outbox
