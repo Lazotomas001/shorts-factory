@@ -3,6 +3,7 @@ name: Daily Shorts
 on:
   schedule:
     - cron: "17 9 * * *"     # every day 09:17 UTC (4:17am New York)
+    - cron: "43 10 * * *"    # backup start 10:43 UTC (5:43am New York) in case GitHub skips the first
   workflow_dispatch:          # "Run workflow" button for manual runs
     inputs:
       channel:
@@ -18,15 +19,26 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+      - name: Skip if today's videos were already made (backup schedule)
+        id: guard
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && git fetch -q --depth 1 origin outbox 2>/dev/null \
+             && git ls-tree -r --name-only FETCH_HEAD | grep -q "^$(date -u +%F)/kids/manifest.json"; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "Already made today - skipping."
+          fi
       - uses: actions/setup-python@v5
+        if: steps.guard.outputs.skip != 'true'
         with:
           python-version: "3.12"
           cache: pip
       - name: Install system tools
+        if: steps.guard.outputs.skip != 'true'
         run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
       - name: Install Python packages
+        if: steps.guard.outputs.skip != 'true'
         run: pip install -r requirements.txt
       - name: Make (and upload) today's Shorts
+        if: steps.guard.outputs.skip != 'true'
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -41,6 +53,7 @@ jobs:
             python run.py daily
           fi
       - name: Save no-repeat history
+        if: steps.guard.outputs.skip != 'true'
         run: |
           git config user.name "shorts-bot"
           git config user.email "shorts-bot@users.noreply.github.com"
@@ -48,17 +61,20 @@ jobs:
           git commit -m "history: $(date -u +%F)" || echo "nothing to commit"
           git push
       - name: Hand over videos for review / manual upload
+        if: steps.guard.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: shorts-${{ github.run_id }}
           path: outbox/
           retention-days: 14
       - name: Split big files (weekly compilations) into <90 MB parts for the outbox branch
+        if: steps.guard.outputs.skip != 'true'
         run: |
           for f in $(find outbox -name '*.mp4' -size +90M); do
             split -b 85M -d -a 2 "$f" "$f.part" && ls "$f".part* | wc -l > "$f.parts" && rm "$f"
           done
       - name: Publish latest videos to the 'outbox' branch (easy download / upload)
+        if: steps.guard.outputs.skip != 'true'
         run: |
           cd outbox
           git init -q -b outbox
