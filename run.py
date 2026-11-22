@@ -44,7 +44,7 @@ def make(key, cfg, count, ledger, seed=None, out_sub=None, **kw):
     metas = []
     for i in range(count):
         rng = np.random.default_rng(seed + i if seed is not None else None)
-        meta = mod.make(out_dir, rng, ledger, channel=key, **kw)
+        meta = mod.make(out_dir, rng, ledger, channel=key, **{**cfg.get("make_args", {}), **kw})
         meta["made_for_kids"] = cfg.get("made_for_kids", False)
         meta["channel"] = key
         metas.append(meta)

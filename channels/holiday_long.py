@@ -216,7 +216,7 @@ class Arrangement:
         return 1.0 + r0 * s + x * s + extra + tail
 
 
-def render_audio(arr, rng, lead_name, transpose, feel):
+def render_audio(arr, rng, lead_name, transpose, feel, inst_as_lead=False):
     lead = audio.INSTRUMENTS[lead_name]
     inst_lead = audio.INSTRUMENTS["celesta" if lead_name != "celesta" else "music_box"]
     total = arr.t(arr.end_beat) + 5.0
@@ -225,6 +225,8 @@ def render_audio(arr, rng, lead_name, transpose, feel):
     for b, m, d, voice in arr.events:
         t0, t1 = arr.t(b), arr.t(b + d)
         dur = max(t1 - t0, 0.08)
+        if inst_as_lead and voice == "lead_inst":
+            voice = "lead"
         if voice in ("lead", "lead_soft"):
             mix.note(lead, m + oct_up, t0, dur * 0.97, 0.42 if voice == "lead" else 0.3)
         elif voice == "lead_inst":

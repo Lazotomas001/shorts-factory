@@ -28,18 +28,27 @@ channels:
     publish_hours_utc: [14, 23]
     trend_queries: ["christmas songs for kids", "jingle bells lyrics", "christmas sing along", "christmas music box"]
 
-  holiday_long:                        # full-length 16:9 carols with lyrics (not Shorts)
-    name: "Cozy Christmas Sing-Along"
-    module: holiday_long
+  cozy:                                # THE Christmas channel: 1-hour cozy instrumental Christmas music + winter scenes
+    name: "Cozy Christmas Ambience"
+    module: cozy_long
     enabled: true
     season: ["11-01", "12-31"]
-    per_day: 1                         # one full carol per day
-    compilation_weekdays: [5]          # Saturday: also a long "carols with lyrics" compilation
-    compilation_songs: 6
+    per_day: 1
+    make_args: {minutes: 60}           # raise to 120-180 once Google approves API uploads
     upload_mode: manual
-    made_for_kids: false               # cozy carols for families/general audience, not aimed at children
+    made_for_kids: false
     publish_hours_utc: [22]            # 5pm New York
-    trend_queries: ["christmas carols with lyrics", "christmas songs sing along", "christmas music fireplace", "silent night lyrics"]
+    trend_queries: ["relaxing christmas music fireplace", "cozy christmas ambience", "christmas piano instrumental", "christmas cabin ambience"]
+
+  holiday_long:                        # (sing-along carols with lyrics; kept but switched off)
+    name: "Christmas Sing-Along"
+    module: holiday_long
+    enabled: false
+    per_day: 1
+    upload_mode: manual
+    made_for_kids: false
+    publish_hours_utc: [22]
+    trend_queries: ["christmas carols with lyrics"]
 
   quiz:
     name: "60 Second Quiz"

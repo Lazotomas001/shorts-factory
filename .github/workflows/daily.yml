@@ -33,6 +33,7 @@ jobs:
           YT_REFRESH_TOKEN_KIDS: ${{ secrets.YT_REFRESH_TOKEN_KIDS }}
           YT_REFRESH_TOKEN_HOLIDAY: ${{ secrets.YT_REFRESH_TOKEN_HOLIDAY }}
           YT_REFRESH_TOKEN_QUIZ: ${{ secrets.YT_REFRESH_TOKEN_QUIZ }}
+          YT_REFRESH_TOKEN_COZY: ${{ secrets.YT_REFRESH_TOKEN_COZY }}
         run: |
           if [ -n "${{ github.event.inputs.channel }}" ]; then
             python run.py daily --channel "${{ github.event.inputs.channel }}"
