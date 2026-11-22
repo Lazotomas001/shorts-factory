@@ -29,7 +29,7 @@ channels:
     trend_queries: ["christmas songs for kids", "jingle bells lyrics", "christmas sing along", "christmas music box"]
 
   cozy:                                # THE Christmas channel: 1-hour cozy instrumental Christmas music + winter scenes
-    name: "Cozy Christmas Ambience"
+    name: "Cozy Winter & Christmas Ambience"   # channel UClg2CWbw4GiQ-OPDjjMPpcg
     module: cozy_long
     enabled: true
     season: ["11-01", "12-31"]
