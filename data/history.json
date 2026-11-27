@@ -91,6 +91,16 @@
    "key": "colors-heart:blue-flower:red-umbrella:yellow-car:purple",
    "at": "2026-11-26T19:06:04+00:00",
    "title": "Learn Colors with Zuzu! \ud83c\udf08 Blue Red Yellow Purple | Toddler Learning"
+  },
+  {
+   "key": "colors-star:orange-flower:yellow-house:red-heart:purple",
+   "at": "2026-11-27T19:02:18+00:00",
+   "title": "Learn Colors with Bubbo! \ud83c\udf08 Orange Yellow Red Purple | Toddler Learning"
+  },
+  {
+   "key": "shadow-heart-balloon-house-umbrella",
+   "at": "2026-11-27T19:02:35+00:00",
+   "title": "Guess the Shadow! \ud83d\udd0d Fun Guessing Game for Kids | Hearts, Balloons, Houses, Umbrellas"
   }
  ],
  "holiday": [
@@ -184,6 +194,11 @@
    "key": "cozy-fireplace-60min-1",
    "at": "2026-11-26T19:08:55+00:00",
    "title": "Cozy Christmas by the Fireplace \u2744 Instrumental Christmas Music & Crackling Fireplace | 1 Hour"
+  },
+  {
+   "key": "cozy-village-60min-1",
+   "at": "2026-11-27T19:04:51+00:00",
+   "title": "Soothing Snowy Christmas Village Night \u2744 Instrumental Christmas Music & Gentle Winter Wind | 1 Hour"
   }
  ]
 }
