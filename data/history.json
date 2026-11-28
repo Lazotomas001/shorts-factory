@@ -19,6 +19,10 @@
   {
    "key": "count-house",
    "at": "2026-11-25T19:22:23+00:00"
+  },
+  {
+   "key": "count-star",
+   "at": "2026-11-28T17:37:14+00:00"
   }
  ],
  "kids": [
@@ -101,6 +105,16 @@
    "key": "shadow-heart-balloon-house-umbrella",
    "at": "2026-11-27T19:02:35+00:00",
    "title": "Guess the Shadow! \ud83d\udd0d Fun Guessing Game for Kids | Hearts, Balloons, Houses, Umbrellas"
+  },
+  {
+   "key": "count-star-7",
+   "at": "2026-11-28T17:37:14+00:00",
+   "title": "Let's Count 7 Stars! \u2b50 Counting for Toddlers"
+  },
+  {
+   "key": "colors-heart:blue-balloon:yellow-umbrella:green-ball:purple",
+   "at": "2026-11-28T17:37:40+00:00",
+   "title": "Learn Colors with Tuko! \ud83c\udf08 Blue Yellow Green Purple | Toddler Learning"
   }
  ],
  "holiday": [
@@ -199,6 +213,11 @@
    "key": "cozy-village-60min-1",
    "at": "2026-11-27T19:04:51+00:00",
    "title": "Soothing Snowy Christmas Village Night \u2744 Instrumental Christmas Music & Gentle Winter Wind | 1 Hour"
+  },
+  {
+   "key": "cozy-cabin-60min-1",
+   "at": "2026-11-28T17:40:06+00:00",
+   "title": "Peaceful Christmas Cabin by the Lake \u2744 Instrumental Christmas Music & Crackling Fire & Snowfall | 1 Hour"
   }
  ]
 }
